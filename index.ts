@@ -7,9 +7,8 @@
 import { confirm, input } from '@inquirer/prompts';
 import { readFileSync, appendFileSync, existsSync } from 'fs';
 import { join, dirname, basename, extname, resolve } from 'path';
-import { execSync } from 'child_process';
 import { configDotenv } from 'dotenv';
-import { runTranscribeForVideo } from '../lib/run-transcribe';
+import { runTranscribeForVideo } from './lib/run-transcribe';
 
 const MODEL   = 'google/gemini-3.1-pro-preview';
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
@@ -64,10 +63,10 @@ Output rules (strictly enforced):
 - Keep each title concise and punchy - one line each.`;
 
 // ---------------------------------------------------------------------------
-// Load .env from repo root (two levels up: video-titles -> tools -> repo)
+// Resolve configuration beside this entry point, even when launched from a video folder.
 // ---------------------------------------------------------------------------
 
-configDotenv({ path: join(dirname(dirname(import.meta.dirname)), '.env') });
+configDotenv({ path: join(import.meta.dirname, '.env') });
 
 const apiKey = process.env.OPENROUTER_API_KEY;
 if (!apiKey) {
@@ -223,8 +222,8 @@ async function sendMessage(userInput: string): Promise<void> {
       headers: {
         Authorization:  `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://github.com/mikecann/mikerosoft',
-        'X-Title':      'mikerosoft/video-titles',
+        'HTTP-Referer': 'https://github.com/mikecann/video-titles',
+        'X-Title':      'video-titles',
       },
       body: JSON.stringify({ model: MODEL, messages, temperature: 0.8, max_tokens: 8000 }),
     });

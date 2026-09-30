@@ -2,6 +2,11 @@
   "name": "video-titles",
   "private": true,
   "type": "module",
+  "scripts": {
+    "start": "bun --no-env-file run index.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@inquirer/prompts": "latest",
     "dotenv": "latest"
